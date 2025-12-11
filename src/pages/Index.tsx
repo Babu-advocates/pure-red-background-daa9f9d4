@@ -763,7 +763,7 @@ const Index = () => {
   };
   
   const formatDateToDDMMYYYY = (dateString: string): string => {
-    if (!dateString) return '-';
+    if (!dateString) return 'Nil';
     try {
       const date = new Date(dateString);
       const day = String(date.getDate()).padStart(2, '0');
