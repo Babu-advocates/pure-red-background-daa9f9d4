@@ -126,7 +126,7 @@ export type Database = {
         Row: {
           created_at: string
           custom_fields: Json | null
-          date: string
+          date: string | null
           deed_type: string
           document_number: string
           executed_by: string
@@ -140,7 +140,7 @@ export type Database = {
         Insert: {
           created_at?: string
           custom_fields?: Json | null
-          date: string
+          date?: string | null
           deed_type: string
           document_number: string
           executed_by: string
@@ -154,7 +154,7 @@ export type Database = {
         Update: {
           created_at?: string
           custom_fields?: Json | null
-          date?: string
+          date?: string | null
           deed_type?: string
           document_number?: string
           executed_by?: string
