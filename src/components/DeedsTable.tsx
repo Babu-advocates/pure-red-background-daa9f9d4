@@ -232,6 +232,13 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
               setDeeds((prev) => [...prev, deed]);
             }
           } else if (payload.eventType === "UPDATE") {
+            // Skip update if user is actively editing this deed (has pending timeouts)
+            const hasPendingUpdate = Object.keys(updateTimeouts.current).some(key => key.startsWith(deed.id));
+            if (hasPendingUpdate) {
+              console.log("Skipping realtime update for deed with pending edits:", deed.id);
+              return;
+            }
+            
             setDeeds((prev) =>
               prev.map((d) =>
                 d.id === deed.id ? deed : d
