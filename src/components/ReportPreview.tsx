@@ -188,7 +188,7 @@ const ReportPreview = ({
           <tbody>
               {validDeeds.map((deed, index) => <tr key={deed.id}>
                 <td style={{ border: '1px solid #000', padding: '6pt' }}>{index + 1}</td>
-                <td style={{ border: '1px solid #000', padding: '6pt' }}>{deed.date || '-'}</td>
+                <td style={{ border: '1px solid #000', padding: '6pt' }}>{deed.date || 'Nil'}</td>
                 <td style={{ border: '1px solid #000', padding: '6pt' }}>{deed.document_number || '-'}</td>
                 <td style={{ border: '1px solid #000', padding: '6pt' }}>
                   {generateDeedParticulars(deed)}
@@ -230,7 +230,7 @@ const ReportPreview = ({
           <tbody>
             {validDeeds.map((deed, index) => <tr key={deed.id}>
                 <td style={{ border: '1px solid #000', padding: '6pt' }}>{index + 1}</td>
-                <td style={{ border: '1px solid #000', padding: '6pt' }}>{deed.date || '-'}</td>
+                <td style={{ border: '1px solid #000', padding: '6pt' }}>{deed.date || 'Nil'}</td>
                 <td style={{ border: '1px solid #000', padding: '6pt' }}>{deed.document_number || '-'}</td>
                 <td style={{ border: '1px solid #000', padding: '6pt' }}>
                   {generateDeedParticulars(deed)}
