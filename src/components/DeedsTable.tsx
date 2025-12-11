@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, FileText, X } from "lucide-react";
+import { Plus, Trash2, FileText, X, CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import DeedCustomFields from "./DeedCustomFields";
@@ -18,6 +18,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format, parse } from "date-fns";
+import { cn } from "@/lib/utils";
 export interface Deed {
   id: string;
   deed_type: string;
@@ -255,7 +259,7 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
       deed_type: "",
       executed_by: "",
       in_favour_of: "",
-      date: new Date().toISOString().split("T")[0],
+      date: null,
       document_number: "",
       nature_of_doc: "",
       table_type: tableType,
@@ -422,9 +426,12 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
 
       // Debounce the database update
       updateTimeouts.current[timeoutKey] = setTimeout(async () => {
+        // Handle null date properly
+        const updateValue = field === "date" && value === "" ? null : value;
+        
         const { error } = await supabase
           .from("deeds")
-          .update({ [field]: value })
+          .update({ [field]: updateValue })
           .eq("id", id);
 
         if (error) {
@@ -754,12 +761,42 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
                       </td>
                     ))}
                     <td className="p-3">
-                      <Input
-                        type="date"
-                        value={deed.date}
-                        onChange={(e) => handleUpdateDeed(deed.id, "date", e.target.value)}
-                        className="transition-all duration-200"
-                      />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-[150px] justify-start text-left font-normal",
+                              !deed.date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {deed.date ? format(parse(deed.date, 'yyyy-MM-dd', new Date()), 'dd-MM-yyyy') : <span>Nil</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <div className="p-2 border-b">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-muted-foreground"
+                              onClick={() => handleUpdateDeed(deed.id, "date", "")}
+                            >
+                              Set as Nil
+                            </Button>
+                          </div>
+                          <Calendar
+                            mode="single"
+                            selected={deed.date ? parse(deed.date, 'yyyy-MM-dd', new Date()) : undefined}
+                            onSelect={(date) => {
+                              if (date) {
+                                handleUpdateDeed(deed.id, "date", format(date, 'yyyy-MM-dd'));
+                              }
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </td>
                     {getColumnsAfter('date').map((col) => (
                       <td key={col.name} className="p-3">
